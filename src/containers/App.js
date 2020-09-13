@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import './App.css';
+import styles from './App.module.css';
 
 // import Radium, {StyleRoot} from 'radium'
-import Person from '../components/Persons/Person/Person'
+import Persons from '../components/Persons/Persons'
+import Cockpit from '../components/Cockpit/Cockpit'
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    console.log('[App.js] constructor')
+  }
 
   state = {
     persons: [
@@ -14,6 +20,10 @@ class App extends Component {
     ],
     showPerson: true
   }
+
+  // static getDerivedStateFromProps(props, state){
+  //   console.log('[App.js] getDerivedStateFromProps', props)
+  // }
 
 
   upgradeHandler = () => {
@@ -45,6 +55,12 @@ class App extends Component {
     //setstate with changed array
     this.setState({persons: persons})
 
+    //set state correctly (like counter)
+    // this.setState((prevState, props) => {
+    //   return{
+    //   }
+    // })
+
   }
 
   deletePersonHandelr = (personIndex) => {
@@ -57,61 +73,25 @@ class App extends Component {
   //whenever react component renderd
   render() {
 
-    const style = {
-      backgroundColor: 'green',
-      color: 'white',
-      padding: '8px',
-      //for radium
-      // ':hover': {
-      //   backgroundColor: 'blue',
-      //   color: 'black'
-      // }
-    }
-
+    console.log('[App.js] render')
     let person = null;
     if(this.state.showPerson){
-      person = (
-        <div>
-          {this.state.persons.map((per, index) => {
-            return <Person 
-              click={() =>this.deletePersonHandelr(index)}
-              name={per.name} 
-              age={per.age}
-              key={per.id}
-              changed={ (event) => this.nameChangedHandler(event, per.id)}
-              />
-          })}
-        </div>
-      )
-      // style.backgroundColor = 'black';
-      // style[':hover']= {
-      //   backgroundColor: 'lightred',
-      //   color: 'black'
-      // }
-
+      person = 
+          <Persons 
+          persons={this.state.persons} 
+          clicked={this.deletePersonHandelr}
+          changed={this.nameChangedHandler}/>
     }
-
-    let classes = [];//"red bold"
-
-    if(this.state.persons.length <= 2){
-      classes.push('red');
-    }
-
-    if(this.state.persons.length <= 1){
-      classes.push('bold');
-    }
-
 
     return (
-      // <StyleRoot>
-      <div className="App">
-        <h1 className = {classes}>You will be first App</h1>
-        <p className = {classes.join(' ')}>it works!</p>
-        <button onClick={this.upgradeHandler}>Upgrade</button>
-        <button style = {style} onClick={this.toggleHandler}>Show Person</button>
+      <div className={styles.App}>  
+        <Cockpit
+          showPerson={this.state.showPerson}
+          persons={this.state.persons}
+          clicked={this.toggleHandler}
+        />
         {person}
       </div>
-      // </StyleRoot>
     );
   }
 }
